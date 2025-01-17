@@ -1,11 +1,12 @@
 import { Route,Routes } from 'react-router'
 import App from '../App.jsx'
+import ChatPage from '../components/ChatPage.jsx'
 
 const AppRoutes = () => {
   return (
     <Routes>
     <Route path='/' element={<App/>} />
-    <Route path='/k' element={<h2>hello  world from react</h2>}/>
+    <Route path='/chat' element={<ChatPage/>} />
     </Routes>
   )
 }
