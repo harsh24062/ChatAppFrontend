@@ -8,3 +8,8 @@ const respone = await httpClient.post('/api/v1/rooms',roomDetail,{
 });
 return respone.data;
 };
+
+export const joinRoomApi = async(roomId) =>{
+   const respone =  await httpClient.get(`/api/v1/rooms/${roomId}`);
+   return respone.data;
+} 

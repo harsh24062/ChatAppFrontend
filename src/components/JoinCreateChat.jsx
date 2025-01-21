@@ -1,7 +1,9 @@
 import { useState } from "react"
 import ChatIcon from "../assets/chat.png"
 import toast from "react-hot-toast";
-import { createRoomApi } from "../Services/RoomService";
+import { createRoomApi, joinRoomApi } from "../Services/RoomService";
+import { useNavigate } from "react-router";
+import useChatContext from "../context/ChatContext";
 
 const JoinCreateChat = () => {
 
@@ -10,6 +12,8 @@ const JoinCreateChat = () => {
     userName:"" 
   });
 
+  const {setRoomId,setCurrentUser,setConnection} = useChatContext();
+  const navigate= useNavigate();
 
   function handleInputFormChange(event){
    setDetail({
@@ -27,31 +31,61 @@ const JoinCreateChat = () => {
     return true;
   }
 
-  function joinRoom(){
+  async function joinRoom(){
 
      if(validateForm()){
       //joinroom
+
+      try {
+
+        const room = await joinRoomApi(detail.roomId);
+        setConnection(true)
+        setRoomId(room.roomId)
+        setCurrentUser(detail.userName)
+        toast.success("Joined Room Successfully")
+        navigate('/chat')
+      } catch (error) {
+        
+        if(error.status==400){
+         toast.error("No Such room exist")
+        }
+        else{
+        toast.error("Error in joining Room")
+        console.log(error)
+        }
+      }
      }
   }
 
   async function createRoom(){
      
     if(validateForm()){
+
       //create room
         console.log(detail);
+
       // call api(backend) to create room 
+
       try{
         const response = await createRoomApi(detail.roomId);
         console.log(response);
         toast.success("Room created successfully");
-        joinRoom();
+
+        //join the room
+        setCurrentUser(detail.userName)
+        setRoomId(response.roomId)
+        setConnection(true)
+
+        // forward to chat page
+         navigate('/chat')
 
       }catch(error){
          if(error.status==400){
-          toast.error("This RoomId already Used by SomeOne, Try new RoomId")
+          toast.error("This RoomId already Used by SomeOne, Try new RoomId");
          }
          else{
-          console.log("error in room creation")
+          toast.error("error in room creation");
+          console.log("error in room creation");
          }
       }
     }
