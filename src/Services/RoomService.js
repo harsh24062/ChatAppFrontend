@@ -13,3 +13,8 @@ export const joinRoomApi = async(roomId) =>{
    const respone =  await httpClient.get(`/api/v1/rooms/${roomId}`);
    return respone.data;
 } 
+
+export const getMessages = async(roomId,size=50,page=0) =>{
+    const respone =  await httpClient.get(`/api/v1/rooms/${roomId}/messages?size=${size}&page=${page}`);
+    return respone.data;
+ } 
